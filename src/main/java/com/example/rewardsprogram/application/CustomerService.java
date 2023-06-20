@@ -3,7 +3,8 @@ package com.example.rewardsprogram.application;
 import com.example.rewardsprogram.api.model.PurchaseData;
 import com.example.rewardsprogram.domain.Customer;
 import com.example.rewardsprogram.domain.Transaction;
-import com.example.rewardsprogram.exception.CustomerNotFoundException;
+import com.example.rewardsprogram.exception.exceptions.CustomerNotFoundException;
+import com.example.rewardsprogram.exception.exceptions.UnprocessableEntityException;
 import com.example.rewardsprogram.infrastructure.CustomerRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -38,6 +39,12 @@ public class CustomerService {
 
     public Customer save(PurchaseData purchaseData) {
         log.debug("Request to save Customer : {}", purchaseData);
+
+        if (purchaseData == null || purchaseData.getId() == null || purchaseData.getName() == null) {
+            log.error("Invalid PurchaseData: {}", purchaseData);
+            throw new UnprocessableEntityException("Invalid PurchaseData - nulls are not allowed");
+        }
+
         Customer customer = customerRepository.findById(purchaseData.getId())
                 .orElseGet(() -> Customer.builder()
                         .id(purchaseData.getId())

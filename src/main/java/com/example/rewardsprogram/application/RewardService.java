@@ -1,6 +1,7 @@
 package com.example.rewardsprogram.application;
 
 import com.example.rewardsprogram.domain.Transaction;
+import com.example.rewardsprogram.exception.exceptions.InvalidDataException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +20,10 @@ public class RewardService {
 
     public int calculateRewardPointsForTransaction(BigDecimal amount) {
         log.debug("Calculating reward points for transaction amount: {}", amount);
+
+        if (amount == null) {
+            throw new InvalidDataException("Transaction amount cannot be null");
+        }
 
         BigDecimal amountValue = amount;
         if (amountValue.compareTo(ONE_POINT_LIMIT) <= 0) {

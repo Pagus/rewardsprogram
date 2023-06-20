@@ -1,6 +1,7 @@
 package com.example.rewardsprogram.application;
 
 import com.example.rewardsprogram.domain.Transaction;
+import com.example.rewardsprogram.exception.exceptions.InvalidDataException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -14,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class RewardServiceTest {
 
@@ -54,5 +56,16 @@ class RewardServiceTest {
         Map<Month, Integer> monthlyPoints = rewardService.calculateMonthlyRewardPoints(transactions);
         assertEquals(10, monthlyPoints.get(Month.JANUARY));
         assertEquals(70, monthlyPoints.get(Month.FEBRUARY));
+    }
+
+    @Test
+    void calculateRewardPointsForTransactionNullAmountThrowsInvalidDataException() {
+        Exception exception = assertThrows(InvalidDataException.class, () ->
+                rewardService.calculateRewardPointsForTransaction(null));
+
+        String expectedMessage = "Transaction amount cannot be null";
+        String actualMessage = exception.getMessage();
+
+        assertEquals(expectedMessage, actualMessage);
     }
 }

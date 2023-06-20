@@ -2,7 +2,8 @@ package com.example.rewardsprogram.application;
 
 import com.example.rewardsprogram.api.model.PurchaseData;
 import com.example.rewardsprogram.domain.Customer;
-import com.example.rewardsprogram.exception.CustomerNotFoundException;
+import com.example.rewardsprogram.exception.exceptions.CustomerNotFoundException;
+import com.example.rewardsprogram.exception.exceptions.UnprocessableEntityException;
 import com.example.rewardsprogram.infrastructure.CustomerRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -31,6 +32,8 @@ class CustomerServiceTest {
         MockitoAnnotations.initMocks(this);
     }
 
+    private static final String EXPECTED_MESSAGE_FOR_UNPROCESSABLE_EXCEPTION = "Invalid PurchaseData - nulls are not allowed";
+
     @Test
     void findAll() {
         when(customerRepository.findAll()).thenReturn(Arrays.asList(new Customer(), new Customer()));
@@ -40,7 +43,7 @@ class CustomerServiceTest {
     }
 
     @Test
-    void findById_found() {
+    void findByIdFound() {
         Long id = 1L;
         when(customerRepository.findById(id)).thenReturn(Optional.of(new Customer()));
         Customer customer = customerService.findById(id);
@@ -49,7 +52,7 @@ class CustomerServiceTest {
     }
 
     @Test
-    void findById_notFound() {
+    void findByIdNotFound() {
         Long id = 1L;
         when(customerRepository.findById(id)).thenReturn(Optional.empty());
         assertThrows(CustomerNotFoundException.class, () -> customerService.findById(id));
@@ -72,5 +75,45 @@ class CustomerServiceTest {
         assertNotNull(savedCustomer);
         verify(customerRepository, times(1)).findById(id);
         verify(customerRepository, times(1)).save(any(Customer.class));
+    }
+
+    @Test
+    public void save_nullPurchaseDataThrowsUnprocessableEntityException() {
+        UnprocessableEntityException exception = assertThrows(UnprocessableEntityException.class,
+                () -> customerService.save(null));
+
+        String actualMessage = exception.getMessage();
+
+        assertEquals(EXPECTED_MESSAGE_FOR_UNPROCESSABLE_EXCEPTION, actualMessage);
+    }
+
+    @Test
+    public void save_nullIdInPurchaseDataThrowsUnprocessableEntityException() {
+        PurchaseData purchaseData = new PurchaseData();
+        purchaseData.setId(null);
+        purchaseData.setName("Test Name");
+        purchaseData.setAmount(new BigDecimal("100"));
+
+        UnprocessableEntityException exception = assertThrows(UnprocessableEntityException.class,
+                () -> customerService.save(purchaseData));
+
+        String actualMessage = exception.getMessage();
+
+        assertEquals(EXPECTED_MESSAGE_FOR_UNPROCESSABLE_EXCEPTION, actualMessage);
+    }
+
+    @Test
+    public void save_nullNameInPurchaseDataThrowsUnprocessableEntityException() {
+        PurchaseData purchaseData = new PurchaseData();
+        purchaseData.setId(1L);
+        purchaseData.setName(null);
+        purchaseData.setAmount(new BigDecimal("100"));
+
+        UnprocessableEntityException exception = assertThrows(UnprocessableEntityException.class,
+                () -> customerService.save(purchaseData));
+
+        String actualMessage = exception.getMessage();
+
+        assertEquals(EXPECTED_MESSAGE_FOR_UNPROCESSABLE_EXCEPTION, actualMessage);
     }
 }
