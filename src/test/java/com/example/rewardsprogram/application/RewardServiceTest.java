@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.MockitoAnnotations;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.Arrays;
@@ -26,19 +27,19 @@ class RewardServiceTest {
 
     @Test
     void calculateRewardPointsForTransaction() {
-        assertEquals(0, rewardService.calculateRewardPointsForTransaction(40));
+        assertEquals(0, rewardService.calculateRewardPointsForTransaction(BigDecimal.valueOf(40)));
 
-        assertEquals(10, rewardService.calculateRewardPointsForTransaction(60));
+        assertEquals(10, rewardService.calculateRewardPointsForTransaction(BigDecimal.valueOf(60)));
 
-        assertEquals(70, rewardService.calculateRewardPointsForTransaction(110));
+        assertEquals(70, rewardService.calculateRewardPointsForTransaction(BigDecimal.valueOf(110)));
     }
 
     @Test
     void calculateTotalRewardPoints() {
         List<Transaction> transactions = Arrays.asList(
-                Transaction.builder().amount(40).date(LocalDate.now()).build(),
-                Transaction.builder().amount(60).date(LocalDate.now()).build(),
-                Transaction.builder().amount(110).date(LocalDate.now()).build()
+                Transaction.builder().amount(BigDecimal.valueOf(40)).date(LocalDate.now()).build(),
+                Transaction.builder().amount(BigDecimal.valueOf(60)).date(LocalDate.now()).build(),
+                Transaction.builder().amount(BigDecimal.valueOf(110)).date(LocalDate.now()).build()
         );
         assertEquals(80, rewardService.calculateTotalRewardPoints(transactions));
     }
@@ -46,9 +47,9 @@ class RewardServiceTest {
     @Test
     void calculateMonthlyRewardPoints() {
         List<Transaction> transactions = Arrays.asList(
-                Transaction.builder().amount(40).date(LocalDate.of(2023, Month.JANUARY, 1)).build(),
-                Transaction.builder().amount(60).date(LocalDate.of(2023, Month.JANUARY, 1)).build(),
-                Transaction.builder().amount(110).date(LocalDate.of(2023, Month.FEBRUARY, 1)).build()
+                Transaction.builder().amount(BigDecimal.valueOf(40)).date(LocalDate.of(2023, Month.JANUARY, 1)).build(),
+                Transaction.builder().amount(BigDecimal.valueOf(60)).date(LocalDate.of(2023, Month.JANUARY, 1)).build(),
+                Transaction.builder().amount(BigDecimal.valueOf(110)).date(LocalDate.of(2023, Month.FEBRUARY, 1)).build()
         );
         Map<Month, Integer> monthlyPoints = rewardService.calculateMonthlyRewardPoints(transactions);
         assertEquals(10, monthlyPoints.get(Month.JANUARY));

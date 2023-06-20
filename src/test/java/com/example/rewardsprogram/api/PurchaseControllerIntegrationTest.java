@@ -11,6 +11,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -32,7 +33,7 @@ class PurchaseControllerIntegrationTest {
         PurchaseData purchaseData = new PurchaseData();
         purchaseData.setId(1L);
         purchaseData.setName("John");
-        purchaseData.setAmount(100);
+        purchaseData.setAmount(BigDecimal.valueOf(100));
 
         Customer customer = Customer.builder()
                 .id(purchaseData.getId())

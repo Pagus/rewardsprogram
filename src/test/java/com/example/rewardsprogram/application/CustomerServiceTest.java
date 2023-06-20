@@ -10,6 +10,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -61,7 +62,7 @@ class CustomerServiceTest {
         PurchaseData purchaseData = new PurchaseData();
         purchaseData.setId(id);
         purchaseData.setName("Test");
-        purchaseData.setAmount(100.0);
+        purchaseData.setAmount(BigDecimal.valueOf(100));
 
         when(customerRepository.findById(id)).thenReturn(Optional.empty());
         when(customerRepository.save(any(Customer.class))).thenAnswer(i -> i.getArgument(0));

@@ -9,5 +9,4 @@ class RewardsprogramApplicationTests {
     @Test
     void contextLoads() {
     }
-
 }
