@@ -8,6 +8,7 @@ import com.example.rewardsprogram.exception.exceptions.UnprocessableEntityExcept
 import com.example.rewardsprogram.infrastructure.CustomerRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -37,6 +38,7 @@ public class CustomerService {
                 });
     }
 
+    @Transactional
     public Customer save(PurchaseData purchaseData) {
         log.debug("Request to save Customer : {}", purchaseData);
 
